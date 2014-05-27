@@ -36,6 +36,8 @@ def increment_row(connection, id):
             cursor.execute('UPDATE test SET sum=%s WHERE id=%s and value=%s and sum=%s', (next_sum, id, value, current_sum))
             if cursor.rowcount == 1:
                 # SUCCESS!
+                if not connection.autocommit:
+                    connection.commit()
                 break
 
             update_failure_count += 1
@@ -67,7 +69,7 @@ def example():
     connection.commit()
 
     # Turn on "autocommit" (default = False)
-    # connection.autocommit = True
+    connection.autocommit = True
 
     for i in xrange(1000):
         value = increment_row(connection, 1)
